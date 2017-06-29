@@ -23,5 +23,8 @@
   "bugs": {
     "url": "https://github.com/BackInMyDays/vuec/issues"
   },
-  "homepage": "https://github.com/BackInMyDays/vuec#readme"
+  "homepage": "https://github.com/BackInMyDays/vuec#readme",
+  "dependencies": {
+    "html-minifier": "^3.5.2"
+  }
 }
