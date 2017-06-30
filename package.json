@@ -1,5 +1,5 @@
 {
-  "name": "vuec",
+  "name": "vuecc",
   "version": "1.0.0",
   "description": "A simple compiler for Vue Single File Components",
   "main": "index.js",
@@ -7,23 +7,25 @@
     "test": "mocha"
   },
   "bin": {
-    "vuec": "./index.js"
+    "vuecc": "./index.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/BackInMyDays/vuec.git"
+    "url": "git+https://github.com/BackInMyDays/vuecc.git"
   },
   "keywords": [
     "vuejs",
     "compiler",
+    "components",
+    "minimal",
     "sfc"
   ],
   "author": "IxDay",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/BackInMyDays/vuec/issues"
+    "url": "https://github.com/BackInMyDays/vuecc/issues"
   },
-  "homepage": "https://github.com/BackInMyDays/vuec#readme",
+  "homepage": "https://github.com/BackInMyDays/vuecc#readme",
   "dependencies": {
     "html-minifier": "^3.5.2"
   }

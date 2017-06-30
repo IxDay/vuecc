@@ -1,5 +1,5 @@
-VUEC
-====
+VUE.js Component Compiler
+=========================
 
 Is a simple compiler for Vue.js Single File Components.
 I love this framework because of its simplicity. I also love the fact that
@@ -24,9 +24,9 @@ or not) will not be copied at this moment.
 
 ```bash
 # install the cli
-npm install -g vuec
+npm install -g vuecc
 # just compile your files to javascript
-vuec component-1.vue component-2.vue > components.js
+vuecc component-1.vue component-2.vue > components.js
 ```
 
 Example
