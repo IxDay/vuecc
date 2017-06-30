@@ -2,7 +2,7 @@
 
 var fs = require('fs');
 var path = require('path');
-var htmlparser = require('html-minifier/src/htmlparser');
+var htmlparser = require('html-minifier/src/htmlparser').HTMLParser;
 var minify = require('html-minifier').minify;
 var program = require('commander');
 var uglify = require('uglify-js');
@@ -16,7 +16,7 @@ var util = require('util');
 )
 
 function parse(data, ctx) {
-  htmlparser.HTMLParser(data, {
+  htmlparser(data, {
     state: null,
     buf: [],
     states: ['template', 'script'],
@@ -52,22 +52,34 @@ function parse(data, ctx) {
 
 
 function dump(ctx) {
+  var options = {
+    parse: {}, compress: false, mangle: false,
+    output: {ast: true, code: false} // optional - faster if false
+  };
   var vueWrapper = util.format(
-    "Vue.component('%s', {template: '%s'})",
+    "Vue.component('%s', {template: '%s'});",
     ctx.name, minify(ctx.template, {collapseWhitespace: true})
   );
 
-  var ast = uglify.minify(vueWrapper, {
-    parse: {},
-    compress: false,
-    mangle: false,
-    output: {
-      ast: true,
-      code: false  // optional - faster if false
+  var wrapper = uglify.minify(vueWrapper, options).ast;
+  var properties = wrapper.body[0].body.args[1].properties;
+
+  var script = uglify.minify(ctx.script, options).ast;
+
+  script.transform(new uglify.TreeTransformer(function(node, descend){
+    if (
+      node.start.value == 'module'
+      && node.body.operator == '='
+      && node.body.left.end.value == 'exports'
+    ) {
+      properties.push.apply(properties, node.body.right.properties);
+      return wrapper;
+    } else {
+      descend(node, this);
+      return node;
     }
-  }).ast;
-  //debugger;
-  return ast.print_to_string({ beautify: true });
+  }));
+  return script.print_to_string({beautify: true});
 }
 
 function compile(context) {
