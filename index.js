@@ -3,7 +3,9 @@
 var fs = require('fs');
 var path = require('path');
 var htmlparser = require('html-minifier/src/htmlparser');
+var minify = require('html-minifier').minify;
 var program = require('commander');
+var uglify = require('uglify-js');
 
 (program
   .version('0.1.0')
@@ -12,8 +14,7 @@ var program = require('commander');
   .parse(process.argv)
 )
 
-function parse(data) {
-  var ctx = {};
+function parse(data, ctx) {
   htmlparser.HTMLParser(data, {
     state: null,
     buf: [],
@@ -50,13 +51,34 @@ function parse(data) {
   return ctx;
 }
 
+
+function dump(ctx) {
+  var vueWrapper = (
+    "Vue.component('"+ ctx.name + "', {template: '" +
+    minify(ctx.template, {collapseWhitespace: true}) +
+    "'})"
+  );
+
+  var ast = uglify.minify(vueWrapper, {
+    parse: {},
+    compress: false,
+    mangle: false,
+    output: {
+      ast: true,
+      code: false  // optional - faster if false
+    }
+  }).ast;
+  //debugger;
+  return ast.print_to_string({ beautify: true });
+}
+
 function compile(context) {
   var stream;
   var cb = function() {
     context.args.forEach(function(input) {
       fs.readFile(input, {encoding: 'utf8'}, function (err, data) {
         if (err) throw err;
-        stream.write(parse(data).template);
+        stream.write(dump(parse(data, {name: input.slice(0, -4)}))); // ".vue".length == 4
       });
     });
   }
@@ -67,7 +89,6 @@ function compile(context) {
     stream = process.stdout;
     cb();
   }
-
 }
 
 compile(program);
