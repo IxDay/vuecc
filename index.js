@@ -6,11 +6,12 @@ var htmlparser = require('html-minifier/src/htmlparser');
 var minify = require('html-minifier').minify;
 var program = require('commander');
 var uglify = require('uglify-js');
+var util = require('util');
 
 (program
   .version('0.1.0')
   .description('Compile Vue Single File Components to a javascript file')
-  .option('-o, --output', 'javascript output file, if not specified try to infer it')
+  .option('-o, --output', 'javascript output file')
   .parse(process.argv)
 )
 
@@ -28,10 +29,8 @@ function parse(data, ctx) {
       }
       this.buf.push('<' + tag);
       for (var i = 0, len = attrs.length; i < len; i++) {
-        this.buf.push(
-          ' ' + attrs[i].name + '="' +
-          (attrs[i].value || '').replace(/"/g, '&#34;') + '"'
-        );
+        var value = (attrs[i].value || '').replace(/"/g, '&#34;')
+        this.buf.push(util.format(' %s="%s"', attrs[i].name, value));
       }
       this.buf.push((unary ? '/' : '') + '>');
     },
@@ -41,7 +40,7 @@ function parse(data, ctx) {
         this.buf = [];
         this.state = null;
       } else {
-        this.buf.push('</' + tag + '>');
+        this.buf.push(util.format('</%s>', tag));
       }
     },
     chars: function(text) {
@@ -53,10 +52,9 @@ function parse(data, ctx) {
 
 
 function dump(ctx) {
-  var vueWrapper = (
-    "Vue.component('"+ ctx.name + "', {template: '" +
-    minify(ctx.template, {collapseWhitespace: true}) +
-    "'})"
+  var vueWrapper = util.format(
+    "Vue.component('%s', {template: '%s'})",
+    ctx.name, minify(ctx.template, {collapseWhitespace: true})
   );
 
   var ast = uglify.minify(vueWrapper, {
