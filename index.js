@@ -56,17 +56,14 @@ function dump(ctx) {
     parse: {}, compress: false, mangle: false,
     output: {ast: true, code: false} // optional - faster if false
   };
-  var vueWrapper = util.format(
+
+  var wrapper = uglify.minify(util.format(
     "Vue.component('%s', {template: '%s'});",
     ctx.name, minify(ctx.template, {collapseWhitespace: true})
-  );
+  ), options).ast;
 
-  var wrapper = uglify.minify(vueWrapper, options).ast;
   var properties = wrapper.body[0].body.args[1].properties;
-
-  var script = uglify.minify(ctx.script, options).ast;
-
-  script.transform(new uglify.TreeTransformer(function(node, descend){
+  var inject = new uglify.TreeTransformer(function(node, descend){
     if (
       node.start.value == 'module'
       && node.body.operator == '='
@@ -78,8 +75,13 @@ function dump(ctx) {
       descend(node, this);
       return node;
     }
-  }));
-  return script.print_to_string({beautify: true});
+  });
+
+  return (uglify
+    .minify(ctx.script, options).ast
+    .transform(inject)
+    .print_to_string({beautify: true}) + '\n'
+  );
 }
 
 function compile(context) {
