@@ -11,7 +11,7 @@ var util = require('util');
 (program
   .version('0.1.0')
   .description('Compile Vue Single File Components to a javascript file')
-  .option('-o, --output', 'javascript output file')
+  .option('-o , --output [file]', 'javascript output file')
   .parse(process.argv)
 )
 
