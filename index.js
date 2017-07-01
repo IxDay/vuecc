@@ -90,7 +90,7 @@ function compile(context) {
     context.args.forEach(function(input) {
       fs.readFile(input, {encoding: 'utf8'}, function (err, data) {
         if (err) throw err;
-        stream.write(dump(parse(data, {name: input.slice(0, -4)}))); // ".vue".length == 4
+        stream.write(dump(parse(data, {name: path.basename(input, '.vue')})));
       });
     });
   }
