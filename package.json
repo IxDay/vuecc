@@ -1,6 +1,6 @@
 {
   "name": "vuecc",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A simple compiler for Vue Single File Components",
   "main": "index.js",
   "scripts": {
