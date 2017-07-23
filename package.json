@@ -1,6 +1,6 @@
 {
   "name": "vuecc",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A simple compiler for Vue Single File Components",
   "main": "index.js",
   "scripts": {
@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/BackInMyDays/vuecc.git"
+    "url": "git+https://github.com/IxDay/vuecc.git"
   },
   "keywords": [
     "vuejs",
@@ -23,9 +23,9 @@
   "author": "IxDay",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/BackInMyDays/vuecc/issues"
+    "url": "https://github.com/IxDay/vuecc/issues"
   },
-  "homepage": "https://github.com/BackInMyDays/vuecc#readme",
+  "homepage": "https://github.com/IxDay/vuecc#readme",
   "dependencies": {
     "html-minifier": "^3.5.2"
   }
